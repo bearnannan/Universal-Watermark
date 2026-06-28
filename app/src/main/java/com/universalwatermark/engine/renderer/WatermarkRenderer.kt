@@ -37,35 +37,65 @@ class WatermarkRenderer @Inject constructor(
                 BitmapFactory.decodeStream(it, null, options)
             }
             
-            // 2. Calculate sample size for large images (e.g. > 4000px)
-            options.inSampleSize = bitmapProcessor.calculateInSampleSize(options, 4000)
+            // 2. Calculate sample size for large images (e.g. > 12000px)
+            options.inSampleSize = bitmapProcessor.calculateInSampleSize(options, 12000)
             options.inJustDecodeBounds = false
             options.inMutable = true // We need a mutable bitmap to draw on
             
-            // 3. Decode actual bitmap
-            val bitmap = contentResolver.openInputStream(sourceUri)?.use {
-                BitmapFactory.decodeStream(it, null, options)
-            } ?: return@withContext Result.failure(Exception("Failed to decode image"))
-
-            val canvas = Canvas(bitmap)
-
-            // 4. Draw Watermark using ported Drawer
-            WatermarkDrawer.draw(
-                canvas = canvas,
-                width = bitmap.width,
-                height = bitmap.height,
-                config = config
-            )
+            // Force sRGB color space on Android O and above to prevent washed-out colors
+            // when saving the Bitmap as a JPEG without an ICC profile.
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                options.inPreferredColorSpace = android.graphics.ColorSpace.get(android.graphics.ColorSpace.Named.SRGB)
+            }
             
-            // 6. Save to output stream
-            outputStream.use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
+            var retryCount = 0
+            val maxRetries = 3
+            var bitmap: Bitmap? = null
+            var success = false
+
+            while (retryCount <= maxRetries && !success) {
+                try {
+                    // 3. Decode actual bitmap
+                    bitmap = contentResolver.openInputStream(sourceUri)?.use {
+                        BitmapFactory.decodeStream(it, null, options)
+                    } ?: return@withContext Result.failure(Exception("Failed to decode image"))
+
+                    val canvas = Canvas(bitmap)
+
+                    // 4. Draw Watermark using ported Drawer
+                    WatermarkDrawer.draw(
+                        canvas = canvas,
+                        width = bitmap.width,
+                        height = bitmap.height,
+                        config = config
+                    )
+                    
+                    // 6. Save to output stream
+                    outputStream.use { out ->
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
+                    }
+                    success = true
+
+                } catch (e: OutOfMemoryError) {
+                    bitmap?.recycle()
+                    bitmap = null
+                    System.gc()
+                    retryCount++
+                    options.inSampleSize *= 2
+                    if (retryCount > maxRetries) {
+                        return@withContext Result.failure(Exception("Out of memory after retries: ${e.message}"))
+                    }
+                }
             }
             
             // 7. Cleanup memory
-            bitmap.recycle()
+            bitmap?.recycle()
             
-            Result.success(Unit)
+            if (success) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Failed to render watermark"))
+            }
             
         } catch (e: Exception) {
             e.printStackTrace()

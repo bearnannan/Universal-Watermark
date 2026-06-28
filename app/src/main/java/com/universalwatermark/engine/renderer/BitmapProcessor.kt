@@ -11,7 +11,8 @@ class BitmapProcessor @Inject constructor() {
     fun calculateInSampleSize(options: BitmapFactory.Options, maxDimension: Int): Int {
         val (width, height) = options.outWidth to options.outHeight
         var inSampleSize = 1
-        while (width / inSampleSize > maxDimension || height / inSampleSize > maxDimension) {
+        val actualMax = if (maxDimension > 4000) 4000 else maxDimension
+        while (width / inSampleSize > actualMax || height / inSampleSize > actualMax) {
             inSampleSize *= 2
         }
         return inSampleSize

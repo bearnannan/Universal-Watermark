@@ -145,7 +145,11 @@ class FloatingWidgetService : Service(), LifecycleOwner, SavedStateRegistryOwner
     private fun createNotification() = NotificationCompat.Builder(this, CHANNEL_ID)
         .setContentTitle("Universal Watermark")
         .setContentText("วิดเจ็ตลอยกำลังทำงาน")
+        .setTicker("Universal Watermark")
         .setSmallIcon(android.R.drawable.ic_menu_camera)
+        .setPriority(NotificationCompat.PRIORITY_LOW)
+        .setOngoing(true)
+        .setStyle(NotificationCompat.BigTextStyle().bigText("วิดเจ็ตลอยกำลังทำงาน"))
         .build()
 
     companion object {

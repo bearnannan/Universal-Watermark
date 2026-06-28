@@ -17,9 +17,11 @@ import com.universalwatermark.data.local.datastore.UserProfileDataStore;
 import com.universalwatermark.data.local.db.WatermarkDatabase;
 import com.universalwatermark.data.local.db.dao.WatermarkHistoryDao;
 import com.universalwatermark.data.local.db.dao.WatermarkTemplateDao;
+import com.universalwatermark.di.CryptoModule_ProvideCryptoManagerFactory;
 import com.universalwatermark.di.DatabaseModule_ProvideHistoryDaoFactory;
 import com.universalwatermark.di.DatabaseModule_ProvideTemplateDaoFactory;
 import com.universalwatermark.di.DatabaseModule_ProvideWatermarkDatabaseFactory;
+import com.universalwatermark.engine.crypto.CryptoManager;
 import com.universalwatermark.engine.metadata.DeviceInfoCollector;
 import com.universalwatermark.engine.metadata.ExifDataExtractor;
 import com.universalwatermark.engine.metadata.MetadataCollector;
@@ -420,25 +422,25 @@ public final class DaggerWatermarkApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_universalwatermark_ui_screen_template_TemplateEditorViewModel = "com.universalwatermark.ui.screen.template.TemplateEditorViewModel";
-
       static String com_universalwatermark_ui_screen_settings_SettingsViewModel = "com.universalwatermark.ui.screen.settings.SettingsViewModel";
-
-      static String com_universalwatermark_ui_screen_dashboard_DashboardViewModel = "com.universalwatermark.ui.screen.dashboard.DashboardViewModel";
 
       static String com_universalwatermark_ui_screen_history_WatermarkHistoryViewModel = "com.universalwatermark.ui.screen.history.WatermarkHistoryViewModel";
 
-      @KeepFieldType
-      TemplateEditorViewModel com_universalwatermark_ui_screen_template_TemplateEditorViewModel2;
+      static String com_universalwatermark_ui_screen_dashboard_DashboardViewModel = "com.universalwatermark.ui.screen.dashboard.DashboardViewModel";
+
+      static String com_universalwatermark_ui_screen_template_TemplateEditorViewModel = "com.universalwatermark.ui.screen.template.TemplateEditorViewModel";
 
       @KeepFieldType
       SettingsViewModel com_universalwatermark_ui_screen_settings_SettingsViewModel2;
 
       @KeepFieldType
+      WatermarkHistoryViewModel com_universalwatermark_ui_screen_history_WatermarkHistoryViewModel2;
+
+      @KeepFieldType
       DashboardViewModel com_universalwatermark_ui_screen_dashboard_DashboardViewModel2;
 
       @KeepFieldType
-      WatermarkHistoryViewModel com_universalwatermark_ui_screen_history_WatermarkHistoryViewModel2;
+      TemplateEditorViewModel com_universalwatermark_ui_screen_template_TemplateEditorViewModel2;
     }
   }
 
@@ -488,25 +490,25 @@ public final class DaggerWatermarkApplication_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_universalwatermark_ui_screen_dashboard_DashboardViewModel = "com.universalwatermark.ui.screen.dashboard.DashboardViewModel";
-
-      static String com_universalwatermark_ui_screen_settings_SettingsViewModel = "com.universalwatermark.ui.screen.settings.SettingsViewModel";
-
       static String com_universalwatermark_ui_screen_template_TemplateEditorViewModel = "com.universalwatermark.ui.screen.template.TemplateEditorViewModel";
+
+      static String com_universalwatermark_ui_screen_dashboard_DashboardViewModel = "com.universalwatermark.ui.screen.dashboard.DashboardViewModel";
 
       static String com_universalwatermark_ui_screen_history_WatermarkHistoryViewModel = "com.universalwatermark.ui.screen.history.WatermarkHistoryViewModel";
 
-      @KeepFieldType
-      DashboardViewModel com_universalwatermark_ui_screen_dashboard_DashboardViewModel2;
-
-      @KeepFieldType
-      SettingsViewModel com_universalwatermark_ui_screen_settings_SettingsViewModel2;
+      static String com_universalwatermark_ui_screen_settings_SettingsViewModel = "com.universalwatermark.ui.screen.settings.SettingsViewModel";
 
       @KeepFieldType
       TemplateEditorViewModel com_universalwatermark_ui_screen_template_TemplateEditorViewModel2;
 
       @KeepFieldType
+      DashboardViewModel com_universalwatermark_ui_screen_dashboard_DashboardViewModel2;
+
+      @KeepFieldType
       WatermarkHistoryViewModel com_universalwatermark_ui_screen_history_WatermarkHistoryViewModel2;
+
+      @KeepFieldType
+      SettingsViewModel com_universalwatermark_ui_screen_settings_SettingsViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {
@@ -640,6 +642,8 @@ public final class DaggerWatermarkApplication_HiltComponents_SingletonC {
 
     private Provider<SettingsDataStore> settingsDataStoreProvider;
 
+    private Provider<CryptoManager> provideCryptoManagerProvider;
+
     private Provider<WatermarkWorker_AssistedFactory> watermarkWorker_AssistedFactoryProvider;
 
     private SingletonCImpl(ApplicationContextModule applicationContextModuleParam) {
@@ -676,6 +680,7 @@ public final class DaggerWatermarkApplication_HiltComponents_SingletonC {
       this.watermarkRendererProvider = DoubleCheck.provider(new SwitchingProvider<WatermarkRenderer>(singletonCImpl, 5));
       this.provideWatermarkDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<WatermarkDatabase>(singletonCImpl, 8));
       this.settingsDataStoreProvider = DoubleCheck.provider(new SwitchingProvider<SettingsDataStore>(singletonCImpl, 9));
+      this.provideCryptoManagerProvider = DoubleCheck.provider(new SwitchingProvider<CryptoManager>(singletonCImpl, 10));
       this.watermarkWorker_AssistedFactoryProvider = SingleCheck.provider(new SwitchingProvider<WatermarkWorker_AssistedFactory>(singletonCImpl, 0));
     }
 
@@ -732,7 +737,7 @@ public final class DaggerWatermarkApplication_HiltComponents_SingletonC {
           return (T) new WatermarkWorker_AssistedFactory() {
             @Override
             public WatermarkWorker create(Context context, WorkerParameters workerParams) {
-              return new WatermarkWorker(context, workerParams, singletonCImpl.metadataCollectorProvider.get(), singletonCImpl.watermarkRendererProvider.get(), singletonCImpl.watermarkHistoryDao(), singletonCImpl.settingsDataStoreProvider.get(), singletonCImpl.userProfileDataStoreProvider.get());
+              return new WatermarkWorker(context, workerParams, singletonCImpl.metadataCollectorProvider.get(), singletonCImpl.watermarkRendererProvider.get(), singletonCImpl.watermarkHistoryDao(), singletonCImpl.settingsDataStoreProvider.get(), singletonCImpl.userProfileDataStoreProvider.get(), singletonCImpl.provideCryptoManagerProvider.get());
             }
           };
 
@@ -762,6 +767,9 @@ public final class DaggerWatermarkApplication_HiltComponents_SingletonC {
 
           case 9: // com.universalwatermark.data.local.datastore.SettingsDataStore 
           return (T) new SettingsDataStore(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 10: // com.universalwatermark.engine.crypto.CryptoManager 
+          return (T) CryptoModule_ProvideCryptoManagerFactory.provideCryptoManager();
 
           default: throw new AssertionError(id);
         }

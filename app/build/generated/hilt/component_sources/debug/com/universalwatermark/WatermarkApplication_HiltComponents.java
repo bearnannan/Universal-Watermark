@@ -1,6 +1,7 @@
 package com.universalwatermark;
 
 import androidx.hilt.work.HiltWrapper_WorkerFactoryModule;
+import com.universalwatermark.di.CryptoModule;
 import com.universalwatermark.di.DatabaseModule;
 import com.universalwatermark.service.BootReceiver_GeneratedInjector;
 import com.universalwatermark.ui.screen.dashboard.DashboardViewModel_HiltModules;
@@ -133,6 +134,7 @@ public final class WatermarkApplication_HiltComponents {
   @Component(
       modules = {
           ApplicationContextModule.class,
+          CryptoModule.class,
           DatabaseModule.class,
           HiltWrapper_FragmentGetContextFix_FragmentGetContextFixModule.class,
           HiltWrapper_WorkerFactoryModule.class,

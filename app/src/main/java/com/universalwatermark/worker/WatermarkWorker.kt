@@ -1,11 +1,18 @@
 package com.universalwatermark.worker
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Size
+import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -32,7 +39,8 @@ class WatermarkWorker @AssistedInject constructor(
     private val watermarkRenderer: WatermarkRenderer,
     private val historyDao: WatermarkHistoryDao,
     private val settingsDataStore: com.universalwatermark.data.local.datastore.SettingsDataStore,
-    private val userProfileDataStore: com.universalwatermark.data.local.datastore.UserProfileDataStore
+    private val userProfileDataStore: com.universalwatermark.data.local.datastore.UserProfileDataStore,
+    private val cryptoManager: com.universalwatermark.engine.crypto.CryptoManager
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
@@ -156,10 +164,55 @@ class WatermarkWorker @AssistedInject constructor(
             val renderResult = watermarkRenderer.render(imageUri, outputStream, config)
             
             if (renderResult.isSuccess) {
+                // 5.5 Generate Hash and Signature (BEFORE removing IS_PENDING)
+                var finalMetadataJson = metadata.toString()
+                try {
+                    val renderedInputStream = resolver.openInputStream(outputUri)
+                    val bytesToHash = renderedInputStream?.readBytes() ?: ByteArray(0)
+                    renderedInputStream?.close()
+
+                    if (bytesToHash.isNotEmpty()) {
+                        val hashBase64 = cryptoManager.generateHash(bytesToHash)
+                        val signature = cryptoManager.signData(hashBase64)
+                        val publicKey = cryptoManager.getPublicKeyBase64()
+
+                        val signatureJson = """{"hash":"$hashBase64","signature":"$signature","publicKey":"$publicKey"}"""
+
+                        val userName = userProfileDataStore.userName.first()
+                        val artistName = if (userName.isNotBlank()) userName else "Universal Watermark User"
+                        
+                        val lat = metadata["LATITUDE"]?.toDoubleOrNull()
+                        val lon = metadata["LONGITUDE"]?.toDoubleOrNull()
+                        val alt = metadata["ALTITUDE"]?.toDoubleOrNull()
+
+                        com.universalwatermark.engine.metadata.ExifWriter.writeSignatureAndCloneExif(
+                            context = context, 
+                            originalUri = imageUri,
+                            outputUri = outputUri, 
+                            signatureJson = signatureJson,
+                            artistName = artistName,
+                            lat = lat,
+                            lon = lon,
+                            alt = alt
+                        )
+                        
+                        finalMetadataJson = "$metadata, SIGNATURE_EMBEDDED: $signature"
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                // Release pending state after EVERYTHING is written
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     contentValues.clear()
                     contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
                     resolver.update(outputUri, contentValues, null, null)
+                } else {
+                    try {
+                        val intent = android.content.Intent(android.content.Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+                        intent.data = outputUri
+                        context.sendBroadcast(intent)
+                    } catch (e: Exception) {}
                 }
                 
                 // 6. Save History
@@ -169,10 +222,59 @@ class WatermarkWorker @AssistedInject constructor(
                         watermarkedUri = outputUri.toString(),
                         templateId = 0L,
                         processedAt = System.currentTimeMillis(),
-                        metadataJson = metadata.toString(), // Simplified
+                        metadataJson = finalMetadataJson,
                         status = "SUCCESS"
                     )
                 )
+
+                // 7. Post Notification
+                try {
+                    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val channel = NotificationChannel(
+                            "watermark_success",
+                            "Watermark Success",
+                            NotificationManager.IMPORTANCE_DEFAULT
+                        )
+                        notificationManager.createNotificationChannel(channel)
+                    }
+
+                    var thumbnail: Bitmap? = null
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            thumbnail = resolver.loadThumbnail(outputUri, Size(512, 512), null)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            thumbnail = MediaStore.Images.Media.getBitmap(resolver, outputUri)
+                        }
+                    } catch (e: Exception) { e.printStackTrace() }
+
+                    val intent = Intent(context, Class.forName("com.universalwatermark.MainActivity")).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    val pendingIntent: PendingIntent = PendingIntent.getActivity(
+                        context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+
+                    val builder = NotificationCompat.Builder(context, "watermark_success")
+                        .setSmallIcon(android.R.drawable.ic_menu_gallery)
+                        .setContentTitle("บันทึกภาพลายน้ำสำเร็จ")
+                        .setContentText("แตะเพื่อดูรูปภาพ")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
+
+                    if (thumbnail != null) {
+                        builder.setLargeIcon(thumbnail)
+                        builder.setStyle(NotificationCompat.BigPictureStyle().bigPicture(thumbnail).bigLargeIcon(null as Bitmap?))
+                    }
+
+                    notificationManager.notify(outputUri.hashCode(), builder.build())
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
                 Result.success()
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

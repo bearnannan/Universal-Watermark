@@ -1,7 +1,7 @@
 [
     {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-xhdpi\\ic_launcher.webp"
+        "merged": "com.universalwatermark.app-debug-84:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.universalwatermark.app-main-86:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
         "merged": "com.universalwatermark.app-debug-84:/mipmap-hdpi_ic_launcher_foreground.webp.flat",
@@ -12,52 +12,8 @@
         "source": "com.universalwatermark.app-main-86:/mipmap-mdpi/ic_launcher_foreground.webp"
     },
     {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-mdpi\\ic_launcher_round.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-xxhdpi\\ic_launcher_foreground.webp"
-    },
-    {
-        "merged": "com.universalwatermark.app-debug-84:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.universalwatermark.app-main-86:/mipmap-xxxhdpi/ic_launcher_round.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-hdpi\\ic_launcher.webp"
-    },
-    {
-        "merged": "com.universalwatermark.app-debug-84:/mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
-        "source": "com.universalwatermark.app-main-86:/mipmap-xxxhdpi/ic_launcher_foreground.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-mdpi\\ic_launcher.webp"
-    },
-    {
-        "merged": "com.universalwatermark.app-debug-84:/mipmap-xhdpi_ic_launcher_foreground.webp.flat",
-        "source": "com.universalwatermark.app-main-86:/mipmap-xhdpi/ic_launcher_foreground.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\xml_backup_rules.xml.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\xml\\backup_rules.xml"
-    },
-    {
-        "merged": "com.universalwatermark.app-debug-84:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "com.universalwatermark.app-main-86:/mipmap-xxhdpi/ic_launcher_round.webp"
-    },
-    {
-        "merged": "com.universalwatermark.app-debug-84:/mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
-        "source": "com.universalwatermark.app-main-86:/mipmap-xxhdpi/ic_launcher_foreground.webp"
-    },
-    {
-        "merged": "com.universalwatermark.app-debug-84:/mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "com.universalwatermark.app-main-86:/mipmap-mdpi/ic_launcher.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\xml_data_extraction_rules.xml.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\xml\\data_extraction_rules.xml"
+        "merged": "com.universalwatermark.app-debug-84:/xml_data_extraction_rules.xml.flat",
+        "source": "com.universalwatermark.app-main-86:/xml/data_extraction_rules.xml"
     },
     {
         "merged": "com.universalwatermark.app-debug-84:/mipmap-xxhdpi_ic_launcher.webp.flat",
@@ -68,60 +24,36 @@
         "source": "com.universalwatermark.app-main-86:/mipmap-hdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-xxhdpi\\ic_launcher.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-xxhdpi\\ic_launcher_round.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-xhdpi\\ic_launcher_round.webp"
+        "merged": "com.universalwatermark.app-debug-84:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.universalwatermark.app-main-86:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
         "merged": "com.universalwatermark.app-debug-84:/mipmap-xhdpi_ic_launcher.webp.flat",
         "source": "com.universalwatermark.app-main-86:/mipmap-xhdpi/ic_launcher.webp"
     },
     {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-anydpi-v26\\ic_launcher.xml"
+        "merged": "com.universalwatermark.app-debug-84:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.universalwatermark.app-main-86:/mipmap-xxxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-xhdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-xhdpi\\ic_launcher_foreground.webp"
+        "merged": "com.universalwatermark.app-debug-84:/mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.universalwatermark.app-main-86:/mipmap-xxxhdpi/ic_launcher_foreground.webp"
     },
     {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-hdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-hdpi\\ic_launcher_foreground.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-xxxhdpi\\ic_launcher.webp"
+        "merged": "com.universalwatermark.app-debug-84:/mipmap-xhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.universalwatermark.app-main-86:/mipmap-xhdpi/ic_launcher_foreground.webp"
     },
     {
         "merged": "com.universalwatermark.app-debug-84:/mipmap-xhdpi_ic_launcher_round.webp.flat",
         "source": "com.universalwatermark.app-main-86:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-mdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-mdpi\\ic_launcher_foreground.webp"
+        "merged": "com.universalwatermark.app-debug-84:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.universalwatermark.app-main-86:/mipmap-xxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-xxxhdpi\\ic_launcher_foreground.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
-    },
-    {
-        "merged": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-debug-84:\\mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\WATCHARA MANADEE\\.gradle\\daemon\\9.3.0\\com.universalwatermark.app-main-86:\\mipmap-hdpi\\ic_launcher_round.webp"
+        "merged": "com.universalwatermark.app-debug-84:/mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.universalwatermark.app-main-86:/mipmap-xxhdpi/ic_launcher_foreground.webp"
     },
     {
         "merged": "com.universalwatermark.app-debug-84:/mipmap-xxxhdpi_ic_launcher.webp.flat",
@@ -130,6 +62,14 @@
     {
         "merged": "com.universalwatermark.app-debug-84:/mipmap-hdpi_ic_launcher.webp.flat",
         "source": "com.universalwatermark.app-main-86:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.universalwatermark.app-debug-84:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.universalwatermark.app-main-86:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.universalwatermark.app-debug-84:/xml_backup_rules.xml.flat",
+        "source": "com.universalwatermark.app-main-86:/xml/backup_rules.xml"
     },
     {
         "merged": "com.universalwatermark.app-debug-84:/mipmap-mdpi_ic_launcher_round.webp.flat",

@@ -59,8 +59,11 @@ class WatermarkMonitorService : Service() {
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Universal Watermark is Active")
             .setContentText("Monitoring for new photos...")
+            .setTicker("Universal Watermark is Active")
             .setSmallIcon(android.R.drawable.ic_menu_camera)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOngoing(true)
+            .setStyle(NotificationCompat.BigTextStyle().bigText("Monitoring for new photos..."))
             .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
