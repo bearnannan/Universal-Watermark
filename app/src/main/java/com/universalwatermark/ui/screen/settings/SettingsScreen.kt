@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import androidx.compose.ui.platform.LocalUriHandler
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -23,6 +23,7 @@ fun SettingsScreen(
     onNavigateToContent: () -> Unit,
     onNavigateToSystem: () -> Unit
 ) {
+    val uriHandler = LocalUriHandler.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -65,11 +66,20 @@ fun SettingsScreen(
                 )
                 Divider()
             }
-            item {
                 SettingsCategoryItem(
                     title = "⚙️ ระบบ (System & Output)",
                     subtitle = "Resolution, Quality, Cloud Path",
                     onClick = onNavigateToSystem
+                )
+                Divider()
+            }
+            item {
+                SettingsCategoryItem(
+                    title = "📜 นโยบายความเป็นส่วนตัว",
+                    subtitle = "Privacy Policy",
+                    onClick = {
+                        uriHandler.openUri("https://bearnannan.github.io/Universal-Watermark/privacy_policy")
+                    }
                 )
             }
         }

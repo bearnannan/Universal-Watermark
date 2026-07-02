@@ -18,7 +18,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.universalwatermark.ui.SelectionDialog
 import com.universalwatermark.ui.ColorPickerItem
 import com.universalwatermark.ui.SliderItem
-import com.universalwatermark.ui.PositionSelectorItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -123,17 +122,6 @@ fun StyleSettingsScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-            }
-
-            item {
-                ProCard(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text("ตำแหน่งลายน้ำ", style = MaterialTheme.typography.titleSmall)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        PositionSelectorItem(selectedPosition = settings.overlayPosition, onPositionSelected = { viewModel.updateOverlayPosition(it) })
-                    }
-                }
-                Spacer(modifier = Modifier.height(32.dp))
             }
         }
 

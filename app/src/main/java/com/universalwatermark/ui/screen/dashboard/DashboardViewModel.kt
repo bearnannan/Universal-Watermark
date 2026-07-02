@@ -46,15 +46,7 @@ class DashboardViewModel @Inject constructor(
         }
     }
     
-    fun applyProfile(id: String) {
-        viewModelScope.launch { settingsRepository.applyWorkflowProfile(id) }
-    }
-    
-    fun saveProfile(profile: com.universalwatermark.data.WorkflowProfile) {
-        viewModelScope.launch { settingsRepository.saveWorkflowProfile(profile) }
-    }
-    
-    fun deleteProfile(id: String) {
-        viewModelScope.launch { settingsRepository.deleteWorkflowProfile(id) }
+    fun updateOverlayPosition(position: String) {
+        viewModelScope.launch { settingsRepository.updateOverlayPosition(position) }
     }
 }

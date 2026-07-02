@@ -113,8 +113,6 @@ data class CameraSettings(
     val uploadLowBattery: Boolean = false,
     val gpsFormat: Int = 0,
     val addressResolution: LocationFormat = LocationFormat.FULL_ADDRESS,
-    val workflowProfiles: List<WorkflowProfile> = emptyList(),
-    val activeProfileId: String? = null,
     val isFloatingWidgetEnabled: Boolean = false
 )
 
@@ -124,18 +122,6 @@ data class CustomField(
     val value: String
 )
 
-data class WorkflowProfile(
-    val id: String = java.util.UUID.randomUUID().toString(),
-    val name: String,
-    val projectName: String,
-    val inspectorName: String,
-    val customNote: String,
-    val tags: String,
-    val isProjectEnabled: Boolean,
-    val isInspectorEnabled: Boolean,
-    val isNoteEnabled: Boolean,
-    val isTagsEnabled: Boolean
-)
 
 
 
@@ -228,8 +214,6 @@ class SettingsRepository(private val context: Context) {
         val IS_INSPECTOR_ENABLED = booleanPreferencesKey("is_inspector_enabled")
         val IS_NOTE_ENABLED = booleanPreferencesKey("is_note_enabled")
         val IS_TAGS_ENABLED = booleanPreferencesKey("is_tags_enabled")
-        val WORKFLOW_PROFILES = stringPreferencesKey("workflow_profiles")
-        val ACTIVE_PROFILE_ID = stringPreferencesKey("active_profile_id")
         val IS_FLOATING_WIDGET_ENABLED = booleanPreferencesKey("is_floating_widget_enabled")
     }
 
@@ -377,28 +361,6 @@ class SettingsRepository(private val context: Context) {
                 addressResolution = try {
                     LocationFormat.valueOf(preferences[PreferencesKeys.ADDRESS_RESOLUTION] ?: "FULL_ADDRESS")
                 } catch (e: Exception) { LocationFormat.FULL_ADDRESS },
-                workflowProfiles = try {
-                    val jsonStr = preferences[PreferencesKeys.WORKFLOW_PROFILES] ?: "[]"
-                    val jsonArray = org.json.JSONArray(jsonStr)
-                    val list = mutableListOf<WorkflowProfile>()
-                    for (i in 0 until jsonArray.length()) {
-                        val obj = jsonArray.getJSONObject(i)
-                        list.add(WorkflowProfile(
-                            id = obj.optString("id"),
-                            name = obj.optString("name"),
-                            projectName = obj.optString("projectName"),
-                            inspectorName = obj.optString("inspectorName"),
-                            customNote = obj.optString("customNote"),
-                            tags = obj.optString("tags"),
-                            isProjectEnabled = obj.optBoolean("isProjectEnabled", true),
-                            isInspectorEnabled = obj.optBoolean("isInspectorEnabled", true),
-                            isNoteEnabled = obj.optBoolean("isNoteEnabled", true),
-                            isTagsEnabled = obj.optBoolean("isTagsEnabled", true)
-                        ))
-                    }
-                    list
-                } catch (e: Exception) { emptyList() },
-                activeProfileId = preferences[PreferencesKeys.ACTIVE_PROFILE_ID],
                 isFloatingWidgetEnabled = preferences[PreferencesKeys.IS_FLOATING_WIDGET_ENABLED] ?: false
             )
         }
@@ -957,97 +919,4 @@ class SettingsRepository(private val context: Context) {
         context.dataStore.edit { it[PreferencesKeys.IS_FLOATING_WIDGET_ENABLED] = enabled }
     }
     
-    suspend fun saveWorkflowProfile(profile: WorkflowProfile) {
-        context.dataStore.edit { preferences ->
-            val currentJsonStr = preferences[PreferencesKeys.WORKFLOW_PROFILES] ?: "[]"
-            val jsonArray = org.json.JSONArray(currentJsonStr)
-            var found = false
-            for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                if (obj.optString("id") == profile.id) {
-                    obj.put("name", profile.name)
-                    obj.put("projectName", profile.projectName)
-                    obj.put("inspectorName", profile.inspectorName)
-                    obj.put("customNote", profile.customNote)
-                    obj.put("tags", profile.tags)
-                    obj.put("isProjectEnabled", profile.isProjectEnabled)
-                    obj.put("isInspectorEnabled", profile.isInspectorEnabled)
-                    obj.put("isNoteEnabled", profile.isNoteEnabled)
-                    obj.put("isTagsEnabled", profile.isTagsEnabled)
-                    found = true
-                    break
-                }
-            }
-            if (!found) {
-                val obj = org.json.JSONObject()
-                obj.put("id", profile.id)
-                obj.put("name", profile.name)
-                obj.put("projectName", profile.projectName)
-                obj.put("inspectorName", profile.inspectorName)
-                obj.put("customNote", profile.customNote)
-                obj.put("tags", profile.tags)
-                obj.put("isProjectEnabled", profile.isProjectEnabled)
-                obj.put("isInspectorEnabled", profile.isInspectorEnabled)
-                obj.put("isNoteEnabled", profile.isNoteEnabled)
-                obj.put("isTagsEnabled", profile.isTagsEnabled)
-                jsonArray.put(obj)
-            }
-            preferences[PreferencesKeys.WORKFLOW_PROFILES] = jsonArray.toString()
-            preferences[PreferencesKeys.ACTIVE_PROFILE_ID] = profile.id
-            
-            // Also apply it to current settings
-            preferences[PreferencesKeys.PROJECT_NAME] = profile.projectName
-            preferences[PreferencesKeys.INSPECTOR_NAME] = profile.inspectorName
-            preferences[PreferencesKeys.CUSTOM_NOTE] = profile.customNote
-            preferences[PreferencesKeys.TAGS] = profile.tags
-            preferences[PreferencesKeys.IS_PROJECT_ENABLED] = profile.isProjectEnabled
-            preferences[PreferencesKeys.IS_INSPECTOR_ENABLED] = profile.isInspectorEnabled
-            preferences[PreferencesKeys.IS_NOTE_ENABLED] = profile.isNoteEnabled
-            preferences[PreferencesKeys.IS_TAGS_ENABLED] = profile.isTagsEnabled
-        }
-    }
-    
-    suspend fun applyWorkflowProfile(profileId: String) {
-        context.dataStore.edit { preferences ->
-            val jsonStr = preferences[PreferencesKeys.WORKFLOW_PROFILES] ?: "[]"
-            val jsonArray = org.json.JSONArray(jsonStr)
-            for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                if (obj.optString("id") == profileId) {
-                    preferences[PreferencesKeys.ACTIVE_PROFILE_ID] = profileId
-                    preferences[PreferencesKeys.PROJECT_NAME] = obj.optString("projectName")
-                    preferences[PreferencesKeys.INSPECTOR_NAME] = obj.optString("inspectorName")
-                    preferences[PreferencesKeys.CUSTOM_NOTE] = obj.optString("customNote")
-                    preferences[PreferencesKeys.TAGS] = obj.optString("tags")
-                    preferences[PreferencesKeys.IS_PROJECT_ENABLED] = obj.optBoolean("isProjectEnabled", true)
-                    preferences[PreferencesKeys.IS_INSPECTOR_ENABLED] = obj.optBoolean("isInspectorEnabled", true)
-                    preferences[PreferencesKeys.IS_NOTE_ENABLED] = obj.optBoolean("isNoteEnabled", true)
-                    preferences[PreferencesKeys.IS_TAGS_ENABLED] = obj.optBoolean("isTagsEnabled", true)
-                    break
-                }
-            }
-        }
-    }
-    
-    suspend fun clearActiveProfile() {
-        context.dataStore.edit { it.remove(PreferencesKeys.ACTIVE_PROFILE_ID) }
-    }
-    
-    suspend fun deleteWorkflowProfile(profileId: String) {
-        context.dataStore.edit { preferences ->
-            val jsonStr = preferences[PreferencesKeys.WORKFLOW_PROFILES] ?: "[]"
-            val jsonArray = org.json.JSONArray(jsonStr)
-            val newArray = org.json.JSONArray()
-            for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                if (obj.optString("id") != profileId) {
-                    newArray.put(obj)
-                }
-            }
-            preferences[PreferencesKeys.WORKFLOW_PROFILES] = newArray.toString()
-            if (preferences[PreferencesKeys.ACTIVE_PROFILE_ID] == profileId) {
-                preferences.remove(PreferencesKeys.ACTIVE_PROFILE_ID)
-            }
-        }
-    }
 }

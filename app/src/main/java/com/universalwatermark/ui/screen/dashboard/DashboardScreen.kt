@@ -3,7 +3,7 @@ package com.universalwatermark.ui.screen.dashboard
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material3.*
 import com.universalwatermark.ui.components.ProButton
 import com.universalwatermark.ui.components.ProCard
@@ -101,93 +101,30 @@ fun DashboardScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Profile Selector
-            var showProfileMenu by remember { mutableStateOf(false) }
-            var showSaveDialog by remember { mutableStateOf(false) }
-            
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text("โปรไฟล์งาน (Workflow Profiles)", style = MaterialTheme.typography.titleMedium)
-                TextButton(onClick = { showSaveDialog = true }) {
-                    Text("บันทึก")
-                }
-            }
-            
-            Box(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-                OutlinedButton(onClick = { showProfileMenu = true }, modifier = Modifier.fillMaxWidth()) {
-                    val activeProfile = cameraSettings.workflowProfiles.find { it.id == cameraSettings.activeProfileId }
-                    Text(activeProfile?.name ?: "เลือกโปรไฟล์ (Select Profile)")
-                }
-                DropdownMenu(
-                    expanded = showProfileMenu,
-                    onDismissRequest = { showProfileMenu = false },
-                    modifier = Modifier.fillMaxWidth(0.9f)
-                ) {
-                    cameraSettings.workflowProfiles.forEach { profile ->
-                        DropdownMenuItem(
-                            text = { Text(profile.name) },
-                            onClick = {
-                                viewModel.applyProfile(profile.id)
-                                showProfileMenu = false
-                            },
-                            trailingIcon = {
-                                IconButton(onClick = { viewModel.deleteProfile(profile.id) }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Delete")
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-            
-            if (showSaveDialog) {
-                var profileName by remember { mutableStateOf("") }
-                AlertDialog(
-                    onDismissRequest = { showSaveDialog = false },
-                    title = { Text("บันทึกโปรไฟล์งาน") },
-                    text = {
-                        OutlinedTextField(
-                            value = profileName,
-                            onValueChange = { profileName = it },
-                            label = { Text("ชื่อโปรไฟล์") }
-                        )
-                    },
-                    confirmButton = {
-                        ProButton(onClick = {
-                            if (profileName.isNotEmpty()) {
-                                viewModel.saveProfile(com.universalwatermark.data.WorkflowProfile(
-                                    name = profileName,
-                                    projectName = cameraSettings.projectName,
-                                    inspectorName = cameraSettings.inspectorName,
-                                    customNote = cameraSettings.customNote,
-                                    tags = cameraSettings.tags,
-                                    isProjectEnabled = cameraSettings.isProjectEnabled,
-                                    isInspectorEnabled = cameraSettings.isInspectorEnabled,
-                                    isNoteEnabled = cameraSettings.isNoteEnabled,
-                                    isTagsEnabled = cameraSettings.isTagsEnabled
-                                ))
-                            }
-                            showSaveDialog = false
-                        }) { Text("บันทึก") }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = { showSaveDialog = false }) { Text("ยกเลิก") }
-                    }
-                )
-            }
-            
-            // Summary Card
-            ProCard(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("สถานะปัจจุบัน", style = MaterialTheme.typography.titleSmall)
-                    Text("โครงการ: ${if (cameraSettings.projectName.isNotEmpty()) cameraSettings.projectName else "-"}", style = MaterialTheme.typography.bodySmall)
-                    Text("เทมเพลต: รูปแบบที่ ${cameraSettings.templateId}", style = MaterialTheme.typography.bodySmall)
-                    Text("บันทึกที่: ${if (cameraSettings.cloudPath.isNotEmpty()) cameraSettings.cloudPath else "โฟลเดอร์เริ่มต้น"}", style = MaterialTheme.typography.bodySmall)
-                }
-            }
+
 
             // Live Preview Card
-            Text("ภาพตัวอย่างลายน้ำ (Live Preview)", style = MaterialTheme.typography.titleMedium, modifier = Modifier.align(Alignment.Start).padding(bottom = 8.dp))
-            LivePreviewCard(settings = cameraSettings)
+            Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text("ภาพตัวอย่างลายน้ำ (Live Preview)", style = MaterialTheme.typography.titleMedium)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.TouchApp,
+                        contentDescription = "Interactive Hint",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        "แตะเพื่อเปลี่ยนตำแหน่ง",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    )
+                }
+            }
+            LivePreviewCard(
+                settings = cameraSettings,
+                onPositionSelected = { pos -> viewModel.updateOverlayPosition(pos) }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 

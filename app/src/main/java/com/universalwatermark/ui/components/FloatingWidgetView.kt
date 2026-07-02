@@ -29,11 +29,20 @@ import com.universalwatermark.data.SettingsRepository
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.material.icons.filled.Settings
+import kotlinx.coroutines.delay
+import androidx.compose.ui.draw.alpha
+import androidx.compose.foundation.clickable
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FloatingWidgetView(
     onClose: () -> Unit,
-    onFocusRequest: (Boolean) -> Unit
+    onFocusRequest: (Boolean) -> Unit,
+    onDrag: (Float, Float) -> Unit,
+    onDragEnd: () -> Unit
 ) {
     val context = LocalContext.current
     val settingsRepository = remember { SettingsRepository(context) }
@@ -41,48 +50,74 @@ fun FloatingWidgetView(
     val savedNotes by settingsRepository.savedNotesFlow.collectAsState(initial = emptySet())
     
     var isExpanded by remember { mutableStateOf(false) }
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
+    var lastInteractionTime by remember { mutableStateOf(System.currentTimeMillis()) }
     
     val scope = rememberCoroutineScope()
     
     // Notify window manager when expanded state changes so we can receive keyboard inputs
     LaunchedEffect(isExpanded) {
         onFocusRequest(isExpanded)
+        if (isExpanded) lastInteractionTime = System.currentTimeMillis()
     }
+    
+    // Auto-Dimming Logic
+    var isDimmed by remember { mutableStateOf(false) }
+    LaunchedEffect(lastInteractionTime, isExpanded) {
+        if (!isExpanded) {
+            isDimmed = false
+            delay(3000)
+            isDimmed = true
+        } else {
+            isDimmed = false
+        }
+    }
+    
+    val alpha by animateFloatAsState(
+        targetValue = if (isDimmed) 0.4f else 1.0f,
+        animationSpec = tween(durationMillis = 300),
+        label = "WidgetAlpha"
+    )
 
     if (cameraSettings == null) return
 
     UniversalWatermarkTheme {
         Box(
-            modifier = Modifier
-                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+            modifier = Modifier.alpha(alpha)
         ) {
         if (!isExpanded) {
             // Collapsed State: AssistiveTouch Bubble
             Box(
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(56.dp)
                     .pointerInput(Unit) {
-                        detectDragGestures { change, dragAmount ->
-                            change.consume()
-                            offsetX += dragAmount.x
-                            offsetY += dragAmount.y
-                        }
+                        detectDragGestures(
+                            onDragStart = { lastInteractionTime = System.currentTimeMillis() },
+                            onDragEnd = { onDragEnd() },
+                            onDragCancel = { onDragEnd() },
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+                                lastInteractionTime = System.currentTimeMillis()
+                                onDrag(dragAmount.x, dragAmount.y)
+                            }
+                        )
                     }
             ) {
-                FloatingActionButton(
-                    onClick = { isExpanded = true },
-                    shape = CircleShape,
-                    containerColor = Color(0xFF121212),
-                    contentColor = Color(0xFFFF6D00),
+                Box(
                     modifier = Modifier
-                        .size(56.dp)
-                        .align(Alignment.Center)
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f))
+                        .clickable { 
+                            lastInteractionTime = System.currentTimeMillis()
+                            isExpanded = true 
+                        },
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        "UW", 
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black)
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Quick Settings",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }

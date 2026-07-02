@@ -31,6 +31,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.universalwatermark.data.local.datastore.SettingsDataStore
 import com.universalwatermark.data.SettingsRepository
+import android.util.DisplayMetrics
+import android.animation.ValueAnimator
+import android.view.animation.DecelerateInterpolator
 
 class FloatingWidgetService : Service(), LifecycleOwner, SavedStateRegistryOwner, ViewModelStoreOwner {
 
@@ -73,9 +76,19 @@ class FloatingWidgetService : Service(), LifecycleOwner, SavedStateRegistryOwner
     
     override fun onBind(intent: Intent?): IBinder? = null
 
-    private lateinit var layoutParams: WindowManager.LayoutParams
+    private lateinit var windowLayoutParams: WindowManager.LayoutParams
+    private var screenWidth = 0
+    private var screenHeight = 0
+    private var preExpandX = 0
+    private var preExpandY = 0
 
     private fun setupComposeView() {
+        val displayMetrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        screenWidth = displayMetrics.widthPixels
+        screenHeight = displayMetrics.heightPixels
+
         composeView = ComposeView(this).apply {
             setViewTreeLifecycleOwner(this@FloatingWidgetService)
             setViewTreeSavedStateRegistryOwner(this@FloatingWidgetService)
@@ -95,6 +108,22 @@ class FloatingWidgetService : Service(), LifecycleOwner, SavedStateRegistryOwner
                     },
                     onFocusRequest = { focused ->
                         updateFocus(focused)
+                    },
+                    onDrag = { dx, dy ->
+                        windowLayoutParams.x += dx.toInt()
+                        windowLayoutParams.y += dy.toInt()
+                        windowManager.updateViewLayout(composeView, windowLayoutParams)
+                    },
+                    onDragEnd = {
+                        val targetX = if (windowLayoutParams.x < screenWidth / 2) 0 else screenWidth
+                        val animator = ValueAnimator.ofInt(windowLayoutParams.x, targetX)
+                        animator.duration = 300
+                        animator.interpolator = DecelerateInterpolator()
+                        animator.addUpdateListener { animation ->
+                            windowLayoutParams.x = animation.animatedValue as Int
+                            windowManager.updateViewLayout(composeView, windowLayoutParams)
+                        }
+                        animator.start()
                     }
                 )
             }
@@ -106,7 +135,7 @@ class FloatingWidgetService : Service(), LifecycleOwner, SavedStateRegistryOwner
             WindowManager.LayoutParams.TYPE_PHONE
         }
 
-        layoutParams = WindowManager.LayoutParams(
+        windowLayoutParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             layoutFlag,
@@ -118,16 +147,47 @@ class FloatingWidgetService : Service(), LifecycleOwner, SavedStateRegistryOwner
             y = 100
         }
 
-        windowManager.addView(composeView, layoutParams)
+        windowManager.addView(composeView, windowLayoutParams)
     }
 
     private fun updateFocus(focused: Boolean) {
         if (focused) {
-            layoutParams.flags = layoutParams.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+            preExpandX = windowLayoutParams.x
+            preExpandY = windowLayoutParams.y
+            windowLayoutParams.flags = windowLayoutParams.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+            val targetX = (screenWidth - dpToPx(300)) / 2
+            val targetY = (screenHeight - dpToPx(450)) / 2
+            animateToPosition(targetX, targetY.coerceAtLeast(0))
         } else {
-            layoutParams.flags = layoutParams.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            windowLayoutParams.flags = windowLayoutParams.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            animateToPosition(preExpandX, preExpandY)
         }
-        windowManager.updateViewLayout(composeView, layoutParams)
+        windowManager.updateViewLayout(composeView, windowLayoutParams)
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
+    }
+
+    private fun animateToPosition(targetX: Int, targetY: Int) {
+        val animX = ValueAnimator.ofInt(windowLayoutParams.x, targetX)
+        val animY = ValueAnimator.ofInt(windowLayoutParams.y, targetY)
+        
+        val updateListener = ValueAnimator.AnimatorUpdateListener { 
+            windowLayoutParams.x = animX.animatedValue as Int
+            windowLayoutParams.y = animY.animatedValue as Int
+            windowManager.updateViewLayout(composeView, windowLayoutParams)
+        }
+        
+        animX.addUpdateListener(updateListener)
+        
+        animX.duration = 250
+        animY.duration = 250
+        animX.interpolator = DecelerateInterpolator()
+        animY.interpolator = DecelerateInterpolator()
+        
+        animX.start()
+        animY.start()
     }
 
     override fun onDestroy() {

@@ -14,8 +14,8 @@ android {
         applicationId = "com.universalwatermark"
         minSdk = 26
         targetSdk = 35
-        versionCode = 300
-        versionName = "3.0"
+        versionCode = 320
+        versionName = "3.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

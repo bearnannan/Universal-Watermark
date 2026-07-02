@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -26,7 +28,10 @@ import com.universalwatermark.engine.renderer.WatermarkDrawer
 import java.util.Date
 
 @Composable
-fun LivePreviewCard(settings: CameraSettings) {
+fun LivePreviewCard(
+    settings: CameraSettings,
+    onPositionSelected: ((String) -> Unit)? = null
+) {
     val context = LocalContext.current
 
     // Convert CameraSettings to OverlayConfig
@@ -115,6 +120,35 @@ fun LivePreviewCard(settings: CameraSettings) {
                     config = config,
                     scale = size.width / 1080f
                 )
+            }
+        }
+        
+        // Interactive 3x3 Grid
+        if (onPositionSelected != null) {
+            androidx.compose.foundation.layout.Column(modifier = Modifier.fillMaxSize()) {
+                val rowWeight = 1f
+                val positions = listOf(
+                    listOf("TOP_LEFT", "TOP_CENTER", "TOP_RIGHT"),
+                    listOf("CENTER_LEFT", "CENTER", "CENTER_RIGHT"),
+                    listOf("BOTTOM_LEFT", "BOTTOM_CENTER", "BOTTOM_RIGHT")
+                )
+                
+                positions.forEach { rowIds ->
+                    androidx.compose.foundation.layout.Row(
+                        modifier = Modifier.fillMaxWidth().weight(rowWeight)
+                    ) {
+                        rowIds.forEach { posId ->
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .clickable(
+                                        onClick = { onPositionSelected(posId) }
+                                    )
+                            )
+                        }
+                    }
+                }
             }
         }
     }
