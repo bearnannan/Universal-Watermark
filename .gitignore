@@ -34,6 +34,7 @@ Thumbs.db
 # Documentation
 *.md
 !README.md
+!docs/*.md
 
 # Python scripts and cache
 *.py
