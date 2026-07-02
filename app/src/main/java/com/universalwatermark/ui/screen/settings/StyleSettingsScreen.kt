@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
+import com.universalwatermark.ui.components.ProButton
+import com.universalwatermark.ui.components.ProCard
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,11 +61,11 @@ fun StyleSettingsScreen(
                     2 -> "มินิมอล (Minimal)"
                     else -> "ดั้งเดิม (Classic)"
                 }
-                Card(modifier = Modifier.fillMaxWidth()) {
+                ProCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("เทมเพลตลายน้ำ", style = MaterialTheme.typography.titleSmall)
                         Text(templateName)
-                        Button(onClick = { showTemplateDialog = true }, modifier = Modifier.padding(top = 8.dp)) {
+                        ProButton(onClick = { showTemplateDialog = true }, modifier = Modifier.padding(top = 8.dp)) {
                             Text("เปลี่ยนเทมเพลต")
                         }
                     }
@@ -72,12 +74,12 @@ fun StyleSettingsScreen(
             }
             
             item {
-                Card(modifier = Modifier.fillMaxWidth()) {
+                ProCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("โลโก้ส่วนตัว", style = MaterialTheme.typography.titleSmall)
                         Text(if (settings.customLogoPath != null) "ตั้งค่าแล้ว" else "ยังไม่มีโลโก้")
                         Row(modifier = Modifier.padding(top = 8.dp)) {
-                            Button(onClick = { logoPickerLauncher.launch("image/*") }) {
+                            ProButton(onClick = { logoPickerLauncher.launch("image/*") }) {
                                 Text("เลือกโลโก้")
                             }
                             if (settings.customLogoPath != null) {
@@ -93,14 +95,14 @@ fun StyleSettingsScreen(
             }
 
             item {
-                Card(modifier = Modifier.fillMaxWidth()) {
+                ProCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("การปรับแต่งข้อความ", style = MaterialTheme.typography.titleSmall)
                         
                         // Font Family
                         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Text("ฟอนต์ (Font)")
-                            Button(onClick = { showFontDialog = true }) { Text(settings.googleFontName) }
+                            ProButton(onClick = { showFontDialog = true }) { Text(settings.googleFontName) }
                         }
                         
                         // Text Style (Bold)
@@ -124,7 +126,7 @@ fun StyleSettingsScreen(
             }
 
             item {
-                Card(modifier = Modifier.fillMaxWidth()) {
+                ProCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("ตำแหน่งลายน้ำ", style = MaterialTheme.typography.titleSmall)
                         Spacer(modifier = Modifier.height(8.dp))

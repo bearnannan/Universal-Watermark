@@ -60,6 +60,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     
+    // Google Fonts
+    implementation("androidx.compose.ui:ui-text-google-fonts")
+    
+
     // CameraX
     val cameraxVersion = "1.4.1"
     implementation("androidx.camera:camera-core:$cameraxVersion")

@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
+import com.universalwatermark.ui.components.ProCard
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -82,11 +83,10 @@ fun WatermarkHistoryScreen(
 
 @Composable
 fun HistoryItemCard(item: WatermarkHistoryEntity, onClick: () -> Unit) {
-    Card(
+    ProCard(
         modifier = Modifier
-            .aspectRatio(1f)
-            .clickable { onClick() },
-        shape = MaterialTheme.shapes.small
+            .aspectRatio(1f),
+        onClick = onClick
     ) {
         AsyncImage(
             model = item.watermarkedUri,

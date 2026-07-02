@@ -5,12 +5,12 @@ import androidx.compose.ui.graphics.Color
 val VibrantOrange = Color(0xFFFF6D00)
 val VibrantTeal = Color(0xFF00E5FF)
 
-val DarkBackground = Color(0xFF121212)
-val DarkSurface = Color(0xFF1A1A1A)
-val DarkSurfaceContainer = Color(0xFF242424)
-val DarkSurfaceVariant = Color(0xFF2C2C2C)
+val DarkBackground = Color(0xFF0F172A) // Slate 900
+val DarkSurface = Color(0xFF1E293B)    // Slate 800
+val DarkSurfaceContainer = Color(0xFF334155) // Slate 700
+val DarkSurfaceVariant = Color(0xFF334155)   // Slate 700
 
-val OutlineDark = Color(0xFF4D4D4D)
+val OutlineDark = Color(0xFF475569) // Slate 600
 
 // Primary/Secondary derivatives
 val OnPrimaryOrange = Color.White

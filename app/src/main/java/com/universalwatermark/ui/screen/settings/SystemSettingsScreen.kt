@@ -26,6 +26,9 @@ import android.provider.Settings
 import android.net.Uri
 import androidx.compose.ui.platform.LocalContext
 
+import com.universalwatermark.ui.components.ProCard
+import com.universalwatermark.ui.components.ProButton
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SystemSettingsScreen(
@@ -59,11 +62,11 @@ fun SystemSettingsScreen(
                 Text("คุณภาพรูปภาพ", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Card(modifier = Modifier.fillMaxWidth()) {
+                ProCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("การบีบอัด (Compression Quality)", style = MaterialTheme.typography.titleSmall)
                         Text("${settings.compressionQuality}%")
-                        Button(onClick = { showQualityDialog = true }, modifier = Modifier.padding(top = 8.dp)) {
+                        ProButton(onClick = { showQualityDialog = true }, modifier = Modifier.padding(top = 8.dp)) {
                             Text("เปลี่ยนระดับคุณภาพ")
                         }
                     }

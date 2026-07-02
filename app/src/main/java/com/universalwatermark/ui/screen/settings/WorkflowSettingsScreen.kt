@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
+import com.universalwatermark.ui.components.ProButton
+import com.universalwatermark.ui.components.ProCard
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,14 +71,14 @@ fun WorkflowSettingsScreen(
                 .padding(16.dp)
         ) {
             item {
-                Card(modifier = Modifier.fillMaxWidth()) {
+                ProCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Text("ชื่อโครงการ (Project)", style = MaterialTheme.typography.titleSmall)
                             Switch(checked = settings.isProjectEnabled, onCheckedChange = { viewModel.updateProjectEnabled(it) })
                         }
                         Text(if (settings.projectName.isNotEmpty()) settings.projectName else "ยังไม่ได้ระบุ")
-                        Button(onClick = { showProjectDialog = true }, modifier = Modifier.padding(top = 8.dp), enabled = settings.isProjectEnabled) {
+                        ProButton(onClick = { showProjectDialog = true }, modifier = Modifier.padding(top = 8.dp), enabled = settings.isProjectEnabled) {
                             Text("แก้ไข")
                         }
                     }
@@ -84,14 +86,14 @@ fun WorkflowSettingsScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             item {
-                Card(modifier = Modifier.fillMaxWidth()) {
+                ProCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Text("ผู้ตรวจงาน (Inspector)", style = MaterialTheme.typography.titleSmall)
                             Switch(checked = settings.isInspectorEnabled, onCheckedChange = { viewModel.updateInspectorEnabled(it) })
                         }
                         Text(if (settings.inspectorName.isNotEmpty()) settings.inspectorName else "ยังไม่ได้ระบุ")
-                        Button(onClick = { showInspectorDialog = true }, modifier = Modifier.padding(top = 8.dp), enabled = settings.isInspectorEnabled) {
+                        ProButton(onClick = { showInspectorDialog = true }, modifier = Modifier.padding(top = 8.dp), enabled = settings.isInspectorEnabled) {
                             Text("แก้ไข")
                         }
                     }
@@ -99,14 +101,14 @@ fun WorkflowSettingsScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             item {
-                Card(modifier = Modifier.fillMaxWidth()) {
+                ProCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Text("ข้อความ/หมายเหตุ (Note)", style = MaterialTheme.typography.titleSmall)
                             Switch(checked = settings.isNoteEnabled, onCheckedChange = { viewModel.updateNoteEnabled(it) })
                         }
                         Text(if (settings.customNote.isNotEmpty()) settings.customNote else "ยังไม่ได้ระบุ")
-                        Button(onClick = { showNoteDialog = true }, modifier = Modifier.padding(top = 8.dp), enabled = settings.isNoteEnabled) {
+                        ProButton(onClick = { showNoteDialog = true }, modifier = Modifier.padding(top = 8.dp), enabled = settings.isNoteEnabled) {
                             Text("จัดการ Notes")
                         }
                     }
@@ -114,14 +116,14 @@ fun WorkflowSettingsScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             item {
-                Card(modifier = Modifier.fillMaxWidth()) {
+                ProCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Text("แท็ก (Tags)", style = MaterialTheme.typography.titleSmall)
                             Switch(checked = settings.isTagsEnabled, onCheckedChange = { viewModel.updateTagsEnabled(it) })
                         }
                         Text(if (settings.tags.isNotEmpty()) settings.tags else "ไม่มีแท็ก")
-                        Button(onClick = { showTagsDialog = true }, modifier = Modifier.padding(top = 8.dp), enabled = settings.isTagsEnabled) {
+                        ProButton(onClick = { showTagsDialog = true }, modifier = Modifier.padding(top = 8.dp), enabled = settings.isTagsEnabled) {
                             Text("จัดการ Tags")
                         }
                     }
@@ -129,7 +131,7 @@ fun WorkflowSettingsScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             item {
-                Card(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+                ProCard(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                             Column {
@@ -166,7 +168,7 @@ fun WorkflowSettingsScreen(
                 }
             }
             item {
-                Button(onClick = { showReorderDialog = true }, modifier = Modifier.fillMaxWidth()) {
+                ProButton(onClick = { showReorderDialog = true }, modifier = Modifier.fillMaxWidth()) {
                     Text("จัดลำดับข้อความในลายน้ำ (Reorder Text)")
                 }
             }

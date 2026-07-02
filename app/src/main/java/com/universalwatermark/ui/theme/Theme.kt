@@ -28,7 +28,7 @@ val UniversalWatermarkColorScheme = darkColorScheme(
     onSurface = Color.White,
     surfaceContainer = DarkSurfaceContainer,
     surfaceVariant = DarkSurfaceVariant,
-    onSurfaceVariant = Color(0xFFB0B0B0),
+    onSurfaceVariant = Color(0xFF94A3B8), // Slate 400
     
     outline = OutlineDark,
     
@@ -60,6 +60,7 @@ fun UniversalWatermarkTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
+        typography = AppTypography,
         content = content
     )
 }

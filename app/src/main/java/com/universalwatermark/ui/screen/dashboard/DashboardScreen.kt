@@ -5,6 +5,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
+import com.universalwatermark.ui.components.ProButton
+import com.universalwatermark.ui.components.ProCard
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +60,7 @@ fun DashboardScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Card(
+            ProCard(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
                     containerColor = if (isServiceEnabled) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
@@ -150,7 +152,7 @@ fun DashboardScreen(
                         )
                     },
                     confirmButton = {
-                        Button(onClick = {
+                        ProButton(onClick = {
                             if (profileName.isNotEmpty()) {
                                 viewModel.saveProfile(com.universalwatermark.data.WorkflowProfile(
                                     name = profileName,
@@ -174,7 +176,7 @@ fun DashboardScreen(
             }
             
             // Summary Card
-            Card(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+            ProCard(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("สถานะปัจจุบัน", style = MaterialTheme.typography.titleSmall)
                     Text("โครงการ: ${if (cameraSettings.projectName.isNotEmpty()) cameraSettings.projectName else "-"}", style = MaterialTheme.typography.bodySmall)
@@ -189,7 +191,7 @@ fun DashboardScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
+            ProButton(
                 onClick = onNavigateToHistory,
                 modifier = Modifier.fillMaxWidth()
             ) {

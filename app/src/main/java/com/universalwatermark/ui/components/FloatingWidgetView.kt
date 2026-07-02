@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
+import com.universalwatermark.ui.components.ProButton
+import com.universalwatermark.ui.components.ProCard
 import com.universalwatermark.ui.theme.UniversalWatermarkTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -86,8 +88,7 @@ fun FloatingWidgetView(
             }
         } else {
             // Expanded State: Quick Settings Dialog
-            Card(
-                shape = RoundedCornerShape(16.dp),
+            ProCard(
                 elevation = CardDefaults.cardElevation(8.dp),
                 modifier = Modifier
                     .width(300.dp)
@@ -191,7 +192,7 @@ fun FloatingWidgetView(
                                 Text("ยกเลิก")
                             }
                             Spacer(modifier = Modifier.width(4.dp))
-                            Button(
+                            ProButton(
                                 onClick = {
                                     scope.launch {
                                         settingsRepository.updateCustomNote(noteText)
