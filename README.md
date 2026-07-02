@@ -20,6 +20,7 @@
 - **Dynamic Folders:** Photos are automatically saved into intelligently named subfolders based on the active "Note" or "Project Name".
 - **Dynamic Filenames:** The file name itself automatically adapts to the context, appending the Note and a readable timestamp (e.g., `SiteA_20260621_143000.jpg`).
 - **MediaStore Integration:** Fully compliant with Android 10+ Scoped Storage, saving efficiently into the `Pictures/UniversalWatermark` directory.
+- **Auto-Cleanup:** Optional setting to automatically delete the original un-watermarked photo from the device to save storage space.
 
 ### 3. 🎯 AssistiveTouch (Floating Widget)
 
@@ -93,6 +94,7 @@ For the app to function properly, it requests the following permissions:
 - `ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION`: To embed GPS data into the watermark and EXIF.
 - `SYSTEM_ALERT_WINDOW`: To draw the AssistiveTouch floating widget over the screen.
 - `READ/WRITE_EXTERNAL_STORAGE` or `READ_MEDIA_IMAGES`: To save and manage photos in the Gallery.
+- `MANAGE_EXTERNAL_STORAGE`: (Android 11+) Required if the user enables the feature to automatically delete original photos.
 - `FOREGROUND_SERVICE`: To keep the floating widget alive in the background.
 
 ---

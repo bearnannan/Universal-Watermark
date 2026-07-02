@@ -33,3 +33,19 @@ secrets.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Documentation
+*.md
+!README.md
+
+# Python scripts and cache
+*.py
+*.pyc
+__pycache__/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+*~
