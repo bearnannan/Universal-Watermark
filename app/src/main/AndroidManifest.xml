@@ -26,6 +26,9 @@
     <!-- Access Location from Images (Android 10+) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
+    <!-- All Files Access for deleting original photos (Android 11+) -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+
     <!-- WAKE LOCK for background processing -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     

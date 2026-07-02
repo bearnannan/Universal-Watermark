@@ -3,6 +3,8 @@ package com.universalwatermark.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -89,9 +91,13 @@ fun FloatingWidgetView(
                 elevation = CardDefaults.cardElevation(8.dp),
                 modifier = Modifier
                     .width(300.dp)
+                    .heightIn(max = 450.dp)
                     .padding(8.dp)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -108,37 +114,46 @@ fun FloatingWidgetView(
                     var noteText by remember(cameraSettings?.customNote) { mutableStateOf(cameraSettings?.customNote ?: "") }
                     var tagsText by remember(cameraSettings?.tags) { mutableStateOf(cameraSettings?.tags ?: "") }
 
-                    OutlinedTextField(
-                        value = noteText,
-                        onValueChange = { noteText = it },
-                        label = { Text("ข้อความ / Note") },
-                        modifier = Modifier.fillMaxWidth(),
-                        trailingIcon = {
-                            if (noteText.isNotBlank()) {
-                                IconButton(onClick = { 
-                                    scope.launch { settingsRepository.addSavedNote(noteText) }
-                                }) {
-                                    Icon(Icons.Default.Save, contentDescription = "Save Note")
+                    var expandedNotesMenu by remember { mutableStateOf(false) }
+
+                    ExposedDropdownMenuBox(
+                        expanded = expandedNotesMenu,
+                        onExpandedChange = { expandedNotesMenu = it }
+                    ) {
+                        OutlinedTextField(
+                            value = noteText,
+                            onValueChange = { noteText = it },
+                            label = { Text("ข้อความ / Note") },
+                            modifier = Modifier.fillMaxWidth().menuAnchor(),
+                            trailingIcon = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    if (noteText.isNotBlank()) {
+                                        IconButton(onClick = { 
+                                            scope.launch { settingsRepository.addSavedNote(noteText) }
+                                        }) {
+                                            Icon(Icons.Default.Save, contentDescription = "Save Note")
+                                        }
+                                    }
+                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedNotesMenu)
                                 }
-                            }
-                        }
-                    )
-                    
-                    if (savedNotes.isNotEmpty()) {
-                        androidx.compose.foundation.lazy.LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                        ) {
-                            items(
-                                count = savedNotes.size,
-                                itemContent = { index ->
-                                    val note = savedNotes.elementAt(index)
-                                    SuggestionChip(
-                                        onClick = { noteText = note },
-                                        label = { Text(note) }
+                            },
+                            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
+                        )
+                        if (savedNotes.isNotEmpty()) {
+                            ExposedDropdownMenu(
+                                expanded = expandedNotesMenu,
+                                onDismissRequest = { expandedNotesMenu = false }
+                            ) {
+                                savedNotes.forEach { note ->
+                                    DropdownMenuItem(
+                                        text = { Text(note) },
+                                        onClick = {
+                                            noteText = note
+                                            expandedNotesMenu = false
+                                        }
                                     )
                                 }
-                            )
+                            }
                         }
                     }
                     

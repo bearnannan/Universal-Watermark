@@ -53,6 +53,7 @@ class SettingsViewModel @Inject constructor(
     fun updateImageFormat(format: ImageFormat) { viewModelScope.launch { settingsRepository.updateImageFormat(format) } }
     fun updateCompressionQuality(quality: Int) { viewModelScope.launch { settingsRepository.updateCompressionQuality(quality) } }
     fun updateSaveExif(save: Boolean) { viewModelScope.launch { settingsRepository.updateSaveExif(save) } }
+    fun updateDeleteOriginalPhoto(delete: Boolean) { viewModelScope.launch { settingsRepository.updateDeleteOriginalPhoto(delete) } }
     fun updateCustomSavePath(path: String?) { viewModelScope.launch { settingsRepository.updateCustomSavePath(path) } }
     fun updateBatterySaverMode(enabled: Boolean) { viewModelScope.launch { settingsRepository.updateBatterySaverMode(enabled) } }
     

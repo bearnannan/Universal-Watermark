@@ -26,6 +26,11 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.universalwatermark.ui.components.FloatingWidgetView
 import android.app.Service
 import android.os.IBinder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import com.universalwatermark.data.local.datastore.SettingsDataStore
+import com.universalwatermark.data.SettingsRepository
 
 class FloatingWidgetService : Service(), LifecycleOwner, SavedStateRegistryOwner, ViewModelStoreOwner {
 
@@ -79,6 +84,13 @@ class FloatingWidgetService : Service(), LifecycleOwner, SavedStateRegistryOwner
             setContent {
                 FloatingWidgetView(
                     onClose = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val settingsDataStore = SettingsDataStore(this@FloatingWidgetService.applicationContext)
+                            settingsDataStore.setServiceEnabled(false)
+                            val settingsRepository = SettingsRepository(this@FloatingWidgetService.applicationContext)
+                            settingsRepository.updateFloatingWidgetEnabled(false)
+                        }
+                        ServiceController.stopService(this@FloatingWidgetService)
                         stopSelf()
                     },
                     onFocusRequest = { focused ->

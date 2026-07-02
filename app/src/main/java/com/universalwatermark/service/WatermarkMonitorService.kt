@@ -39,6 +39,7 @@ class WatermarkMonitorService : Service() {
 
             val workRequest = OneTimeWorkRequestBuilder<WatermarkWorker>()
                 .setInputData(inputData)
+                .setInitialDelay(5, java.util.concurrent.TimeUnit.SECONDS)
                 .build()
 
             WorkManager.getInstance(applicationContext).enqueueUniqueWork(

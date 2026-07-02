@@ -41,6 +41,8 @@ class WatermarkRenderer @Inject constructor(
             options.inSampleSize = bitmapProcessor.calculateInSampleSize(options, 12000)
             options.inJustDecodeBounds = false
             options.inMutable = true // We need a mutable bitmap to draw on
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888 // Force maximum color depth
+            options.inScaled = false // Prevent density-based scaling
             
             // Force sRGB color space on Android O and above to prevent washed-out colors
             // when saving the Bitmap as a JPEG without an ICC profile.
@@ -52,27 +54,64 @@ class WatermarkRenderer @Inject constructor(
             val maxRetries = 3
             var bitmap: Bitmap? = null
             var success = false
+            var currentSampleSize = options.inSampleSize
 
             while (retryCount <= maxRetries && !success) {
                 try {
                     // 3. Decode actual bitmap
-                    bitmap = contentResolver.openInputStream(sourceUri)?.use {
-                        BitmapFactory.decodeStream(it, null, options)
-                    } ?: return@withContext Result.failure(Exception("Failed to decode image"))
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                        val source = android.graphics.ImageDecoder.createSource(contentResolver, sourceUri)
+                        bitmap = android.graphics.ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                            decoder.allocator = android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
+                            decoder.isMutableRequired = true
+                            if (currentSampleSize > 1) {
+                                decoder.setTargetSampleSize(currentSampleSize)
+                            }
+                        }
+                    } else {
+                        options.inSampleSize = currentSampleSize
+                        var decodedBitmap: Bitmap? = contentResolver.openInputStream(sourceUri)?.use {
+                            BitmapFactory.decodeStream(it, null, options)
+                        }
+                        if (decodedBitmap == null) return@withContext Result.failure(Exception("Failed to decode image"))
+                        
+                        // Handle rotation manually for API < 28
+                        val rotationMatrix = android.graphics.Matrix()
+                        contentResolver.openInputStream(sourceUri)?.use { stream ->
+                            val exif = androidx.exifinterface.media.ExifInterface(stream)
+                            val orientation = exif.getAttributeInt(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
+                            when (orientation) {
+                                androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> rotationMatrix.postRotate(90f)
+                                androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> rotationMatrix.postRotate(180f)
+                                androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> rotationMatrix.postRotate(270f)
+                            }
+                        }
+                        
+                        if (!rotationMatrix.isIdentity) {
+                            val rotatedBitmap = Bitmap.createBitmap(decodedBitmap, 0, 0, decodedBitmap.width, decodedBitmap.height, rotationMatrix, true)
+                            if (rotatedBitmap != decodedBitmap) {
+                                decodedBitmap.recycle()
+                                decodedBitmap = rotatedBitmap.copy(Bitmap.Config.ARGB_8888, true)
+                                rotatedBitmap.recycle()
+                            }
+                        }
+                        bitmap = decodedBitmap
+                    }
 
-                    val canvas = Canvas(bitmap)
+                    val finalBitmap = bitmap ?: throw Exception("Failed to decode image")
+                    val canvas = Canvas(finalBitmap)
 
                     // 4. Draw Watermark using ported Drawer
                     WatermarkDrawer.draw(
                         canvas = canvas,
-                        width = bitmap.width,
-                        height = bitmap.height,
+                        width = finalBitmap.width,
+                        height = finalBitmap.height,
                         config = config
                     )
                     
                     // 6. Save to output stream
                     outputStream.use { out ->
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 95, out)
+                        finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
                     }
                     success = true
 
@@ -81,7 +120,7 @@ class WatermarkRenderer @Inject constructor(
                     bitmap = null
                     System.gc()
                     retryCount++
-                    options.inSampleSize *= 2
+                    currentSampleSize *= 2
                     if (retryCount > maxRetries) {
                         return@withContext Result.failure(Exception("Out of memory after retries: ${e.message}"))
                     }

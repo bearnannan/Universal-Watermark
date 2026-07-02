@@ -215,7 +215,19 @@ class WatermarkWorker @AssistedInject constructor(
                     } catch (e: Exception) {}
                 }
                 
-                // 6. Save History
+                // 6. Delete Original Photo if enabled
+                if (settings.deleteOriginalPhoto) {
+                    try {
+                        resolver.delete(imageUri, null, null)
+                    } catch (e: SecurityException) {
+                        // Ignored if API 29+ Scope Storage blocks deletion
+                        e.printStackTrace()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
+                // 7. Save History
                 historyDao.insertHistory(
                     WatermarkHistoryEntity(
                         originalUri = imageUriString,
@@ -258,7 +270,7 @@ class WatermarkWorker @AssistedInject constructor(
                     )
 
                     val builder = NotificationCompat.Builder(context, "watermark_success")
-                        .setSmallIcon(android.R.drawable.ic_menu_gallery)
+                        .setSmallIcon(com.universalwatermark.R.mipmap.ic_launcher)
                         .setContentTitle("บันทึกภาพลายน้ำสำเร็จ")
                         .setContentText("แตะเพื่อดูรูปภาพ")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -267,7 +279,7 @@ class WatermarkWorker @AssistedInject constructor(
 
                     if (thumbnail != null) {
                         builder.setLargeIcon(thumbnail)
-                        builder.setStyle(NotificationCompat.BigPictureStyle().bigPicture(thumbnail).bigLargeIcon(null as Bitmap?))
+                        builder.setStyle(NotificationCompat.BigPictureStyle().bigPicture(thumbnail))
                     }
 
                     notificationManager.notify(outputUri.hashCode(), builder.build())

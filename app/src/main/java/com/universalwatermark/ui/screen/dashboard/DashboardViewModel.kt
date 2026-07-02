@@ -31,10 +31,17 @@ class DashboardViewModel @Inject constructor(
     fun toggleService(enabled: Boolean) {
         viewModelScope.launch {
             settingsDataStore.setServiceEnabled(enabled)
+            settingsRepository.updateFloatingWidgetEnabled(enabled)
             if (enabled) {
                 ServiceController.startService(app)
+                if (android.provider.Settings.canDrawOverlays(app)) {
+                    val serviceIntent = android.content.Intent(app, com.universalwatermark.service.FloatingWidgetService::class.java)
+                    app.startForegroundService(serviceIntent)
+                }
             } else {
                 ServiceController.stopService(app)
+                val serviceIntent = android.content.Intent(app, com.universalwatermark.service.FloatingWidgetService::class.java)
+                app.stopService(serviceIntent)
             }
         }
     }

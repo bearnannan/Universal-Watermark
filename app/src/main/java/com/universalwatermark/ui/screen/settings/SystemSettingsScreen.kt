@@ -19,6 +19,12 @@ import com.universalwatermark.data.ImageFormat
 import com.universalwatermark.ui.SettingsToggleItem
 import com.universalwatermark.ui.SelectionDialog
 import com.universalwatermark.ui.TextInputDialog
+import android.os.Build
+import android.os.Environment
+import android.content.Intent
+import android.provider.Settings
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +33,7 @@ fun SystemSettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val settings by viewModel.cameraSettingsFlow.collectAsState()
+    val context = LocalContext.current
     
     var showQualityDialog by remember { mutableStateOf(false) }
 
@@ -61,6 +68,29 @@ fun SystemSettingsScreen(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text("การจัดการไฟล์ (File Management)", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+                Spacer(modifier = Modifier.height(8.dp))
+                SettingsToggleItem(
+                    title = "ลบรูปต้นฉบับหลังจากใส่ลายน้ำ",
+                    subtitle = "Delete Original Photo",
+                    isEnabled = settings.deleteOriginalPhoto,
+                    onToggle = { isChecked -> 
+                        if (isChecked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+                            try {
+                                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                                intent.data = Uri.parse("package:${context.packageName}")
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                                context.startActivity(intent)
+                            }
+                        } else {
+                            viewModel.updateDeleteOriginalPhoto(isChecked) 
+                        }
+                    }
+                )
                 Spacer(modifier = Modifier.height(16.dp))
             }
 

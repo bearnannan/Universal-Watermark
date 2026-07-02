@@ -106,6 +106,7 @@ data class CameraSettings(
     val isCoordinatesEnabled: Boolean = true,
     val customFields: List<CustomField> = emptyList(), // New Custom Fields
     val saveOriginalPhoto: Boolean = false,
+    val deleteOriginalPhoto: Boolean = false,
     val fileNameFormat: FileNameFormat = FileNameFormat.TIMESTAMP_PROJECT,
     val cloudPath: String = "", // Base folder path for Google Drive
     val uploadOnlyWifi: Boolean = false,
@@ -216,6 +217,7 @@ class SettingsRepository(private val context: Context) {
         val AVAILABLE_TAGS = stringSetPreferencesKey("available_tags")
         val SAVED_NOTES = stringSetPreferencesKey("saved_notes")
         val SAVE_ORIGINAL_PHOTO = booleanPreferencesKey("save_original_photo")
+        val DELETE_ORIGINAL_PHOTO = booleanPreferencesKey("delete_original_photo")
         val FILE_NAME_FORMAT = stringPreferencesKey("file_name_format")
         val CLOUD_PATH = stringPreferencesKey("cloud_path")
         val UPLOAD_ONLY_WIFI = booleanPreferencesKey("upload_only_wifi")
@@ -365,6 +367,7 @@ class SettingsRepository(private val context: Context) {
                 },
                 availableTags = preferences[PreferencesKeys.AVAILABLE_TAGS] ?: emptySet(),
                 saveOriginalPhoto = preferences[PreferencesKeys.SAVE_ORIGINAL_PHOTO] ?: false,
+                deleteOriginalPhoto = preferences[PreferencesKeys.DELETE_ORIGINAL_PHOTO] ?: false,
                 fileNameFormat = try {
                     FileNameFormat.valueOf(preferences[PreferencesKeys.FILE_NAME_FORMAT] ?: "TIMESTAMP_PROJECT")
                 } catch (e: Exception) { FileNameFormat.TIMESTAMP_PROJECT },
@@ -423,6 +426,12 @@ class SettingsRepository(private val context: Context) {
     suspend fun updateSaveExif(save: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.SAVE_EXIF] = save
+        }
+    }
+
+    suspend fun updateDeleteOriginalPhoto(delete: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.DELETE_ORIGINAL_PHOTO] = delete
         }
     }
 
