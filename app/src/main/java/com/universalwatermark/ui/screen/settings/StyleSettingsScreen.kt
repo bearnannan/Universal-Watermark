@@ -110,6 +110,12 @@ fun StyleSettingsScreen(
                             Switch(checked = settings.textStyle == 1, onCheckedChange = { viewModel.updateTextStyle(if (it) 1 else 0) })
                         }
                         
+                        // Text Shadow
+                        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                            Text("เงาตกกระทบ (Drop Shadow)")
+                            Switch(checked = settings.textShadowEnabled, onCheckedChange = { viewModel.updateTextShadow(it) })
+                        }
+                        
                         Divider(modifier = Modifier.padding(vertical = 8.dp))
                         
                         // Size Slider
@@ -151,7 +157,7 @@ fun StyleSettingsScreen(
         if (showFontDialog) {
             SelectionDialog(
                 title = "เลือกฟอนต์",
-                options = listOf("Roboto", "Oswald", "Roboto Mono", "Playfair Display", "Inter", "Cursive"),
+                options = listOf("Roboto", "Oswald", "Roboto Mono", "Playfair Display", "Inter", "Cursive", "Noto Sans Thai Looped"),
                 selectedOption = settings.googleFontName,
                 onSelect = { 
                     viewModel.updateGoogleFontName(it)

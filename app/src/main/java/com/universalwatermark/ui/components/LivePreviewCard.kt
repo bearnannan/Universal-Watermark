@@ -34,8 +34,22 @@ fun LivePreviewCard(
 ) {
     val context = LocalContext.current
 
+    // Load Noto Sans Thai Looped typeface dynamically only if selected in settings
+    val notoTypeface = remember(context, settings.googleFontName) {
+        if (settings.googleFontName == "Noto Sans Thai Looped") {
+            try {
+                val fontResId = context.resources.getIdentifier("noto_sans_thai_looped", "font", context.packageName)
+                if (fontResId != 0) {
+                    androidx.core.content.res.ResourcesCompat.getFont(context, fontResId)
+                } else null
+            } catch (e: Exception) {
+                null
+            }
+        } else null
+    }
+
     // Convert CameraSettings to OverlayConfig
-    val config = remember(settings) {
+    val config = remember(settings, notoTypeface) {
         val logoBitmap = if (settings.customLogoPath != null) {
             try {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
@@ -82,6 +96,7 @@ fun LivePreviewCard(
             fontFamily = settings.fontFamily,
             textOrder = settings.customTextOrder,
             googleFontName = settings.googleFontName,
+            customTypeface = notoTypeface,
             textStrokeEnabled = settings.textStrokeEnabled,
             textStrokeWidth = settings.textStrokeWidth,
             textStrokeColor = settings.textStrokeColor,

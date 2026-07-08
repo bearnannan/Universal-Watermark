@@ -100,13 +100,27 @@ class WatermarkRenderer @Inject constructor(
 
                     val finalBitmap = bitmap ?: throw Exception("Failed to decode image")
                     val canvas = Canvas(finalBitmap)
+                    
+                    // Load Noto Sans Thai Looped typeface only if selected in settings
+                    val notoTypeface = if (config.googleFontName == "Noto Sans Thai Looped") {
+                        try {
+                            val fontResId = context.resources.getIdentifier("noto_sans_thai_looped", "font", context.packageName)
+                            if (fontResId != 0) {
+                                androidx.core.content.res.ResourcesCompat.getFont(context, fontResId)
+                            } else null
+                        } catch (e: Exception) {
+                            null
+                        }
+                    } else null
+                    
+                    val renderConfig = config.copy(customTypeface = notoTypeface)
 
                     // 4. Draw Watermark using ported Drawer
                     WatermarkDrawer.draw(
                         canvas = canvas,
                         width = finalBitmap.width,
                         height = finalBitmap.height,
-                        config = config
+                        config = renderConfig
                     )
                     
                     // 6. Save to output stream

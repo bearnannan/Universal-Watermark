@@ -82,5 +82,8 @@ data class OverlayConfig(
     val textOrder: List<com.universalwatermark.data.WatermarkItemType> = emptyList(),
     
     // Logo
-    val logoBitmap: Bitmap? = null
+    val logoBitmap: Bitmap? = null,
+    
+    // Custom Typeface for Watermark Canvas
+    val customTypeface: android.graphics.Typeface? = null
 )

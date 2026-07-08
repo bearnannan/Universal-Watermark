@@ -54,21 +54,26 @@ object WatermarkDrawer {
             alpha = config.alpha
             isAntiAlias = true
             style = Paint.Style.FILL
+            
             if (config.textShadowEnabled) {
-                setShadowLayer(5f * scale, 2f * scale, 2f * scale, Color.BLACK)
+                setShadowLayer(8f * scale, 0f, 4f * scale, Color.argb(200, 0, 0, 0))
             }
             
-            val baseTypeface = when (config.googleFontName) {
-                "Oswald" -> Typeface.create("sans-serif-condensed", Typeface.BOLD)
-                "Roboto Mono" -> Typeface.MONOSPACE
-                "Playfair Display" -> Typeface.SERIF
-                "Inter" -> Typeface.SANS_SERIF
-                "Cursive" -> Typeface.create("cursive", Typeface.NORMAL)
-                else -> Typeface.SANS_SERIF
+            if (config.customTypeface != null) {
+                val style = if (config.textStyle == 1) Typeface.BOLD else Typeface.NORMAL
+                typeface = Typeface.create(config.customTypeface, style)
+            } else {
+                val baseTypeface = when (config.googleFontName) {
+                    "Oswald" -> Typeface.create("sans-serif-condensed", Typeface.BOLD)
+                    "Roboto Mono" -> Typeface.MONOSPACE
+                    "Playfair Display" -> Typeface.SERIF
+                    "Inter" -> Typeface.SANS_SERIF
+                    "Cursive" -> Typeface.create("cursive", Typeface.NORMAL)
+                    else -> Typeface.SANS_SERIF
+                }
+                val style = if (config.textStyle == 1) Typeface.BOLD else Typeface.NORMAL
+                typeface = Typeface.create(baseTypeface, style)
             }
-            
-            val style = if (config.textStyle == 1) Typeface.BOLD else Typeface.NORMAL
-            typeface = Typeface.create(baseTypeface, style)
         }
 
         val allLines = mutableListOf<String>()
