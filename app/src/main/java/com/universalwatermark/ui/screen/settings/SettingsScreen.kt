@@ -4,8 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,7 +30,7 @@ fun SettingsScreen(
                 title = { Text("ตั้งค่า (Settings)") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -48,7 +48,7 @@ fun SettingsScreen(
                     subtitle = "Project, Inspector, Notes, Tags",
                     onClick = onNavigateToWorkflow
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 SettingsCategoryItem(
@@ -56,7 +56,7 @@ fun SettingsScreen(
                     subtitle = "Template, Font, Color, Size, Logo",
                     onClick = onNavigateToStyle
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 SettingsCategoryItem(
@@ -64,14 +64,15 @@ fun SettingsScreen(
                     subtitle = "Date/Time, Location, GPS, Compass, Altitude",
                     onClick = onNavigateToContent
                 )
-                Divider()
+                HorizontalDivider()
             }
+            item {
                 SettingsCategoryItem(
                     title = "⚙️ ระบบ (System & Output)",
                     subtitle = "Resolution, Quality, Cloud Path",
                     onClick = onNavigateToSystem
                 )
-                Divider()
+                HorizontalDivider()
             }
             item {
                 SettingsCategoryItem(
@@ -111,7 +112,7 @@ fun SettingsCategoryItem(title: String, subtitle: String, onClick: () -> Unit) {
             )
         }
         Icon(
-            imageVector = Icons.Default.KeyboardArrowRight,
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
