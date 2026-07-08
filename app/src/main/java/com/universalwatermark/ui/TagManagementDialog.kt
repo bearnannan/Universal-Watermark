@@ -15,6 +15,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 
 // Use experimental API for FlowRow and FilterChip
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
@@ -33,7 +34,7 @@ fun TagManagementDialog(
     var selectedTags by remember { 
         mutableStateOf(
             if (initialTags.isBlank()) setOf() 
-            else initialTags.split(",", " ").map { it.trim().removePrefix("#") }.filter { it.isNotEmpty() }.toSet()
+            else initialTags.split(",", " ").map { it.trim() }.filter { it.isNotEmpty() }.toSet()
         ) 
     }
     
@@ -146,17 +147,19 @@ fun TagManagementDialog(
                             label = { Text(tag) },
                             leadingIcon = if (isSelected) {
                                 { Icon(Icons.Filled.Check, "Selected") }
-                            } else null
+                            } else null,
+                            trailingIcon = {
+                                IconButton(
+                                    modifier = Modifier.size(24.dp),
+                                    onClick = {
+                                        onRemoveTag(tag)
+                                        selectedTags = selectedTags - tag
+                                    }
+                                ) {
+                                    Icon(Icons.Filled.Close, contentDescription = "Delete", modifier = Modifier.size(16.dp))
+                                }
+                            }
                         )
-                        // Note: Long press to delete is tricky with standard FilterChip.
-                        // For MVP, we might need a separate Delete mode or 'x' icon.
-                        // Adding a 'Delete' logic: If user wants to delete, maybe an 'Edit Mode'?
-                        // For now strictly following request: "Long-press to delete".
-                        // Standard FilterChip doesn't expose onLongClick. 
-                        // We will skip long-press for now and stick to simple selection + separate clear all.
-                        // Or we can assume 'RemoveAvailableTag' is what 'Clear All' primarily helps with, 
-                        // but individual delete is requested. 
-                        // Let's implement a 'Edit List' or make custom implementation later if strictly needed.
                     }
                 }
                 
@@ -190,8 +193,8 @@ fun TagManagementDialog(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(onClick = {
-                         // Join selected tags with space and hash
-                     onConfirm(selectedTags.joinToString(" ") { "#$it" })
+                         // Join selected tags with space
+                     onConfirm(selectedTags.joinToString(" "))
                 }) {
                         Text("OK")
                     }
